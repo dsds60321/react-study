@@ -217,8 +217,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 * **RouterProvider 사용법**
   * RouterProvider는 React Router v6에서 라우팅 시스템을 구성하기 위한 새로운 인터페이스입니다.
   1. createBrowserRouter: 라우팅 정보를 가진 객체를 생성합니다. RouterProvider에 전달될 브라우저 라우터의 인스턴스를 만들어주는 함수입니다.
-  2. routes: 라우트 구성에 대한 배열로, 어플리케이션의 라우트 구조를 정의합니다. 일반적으로 객체의 배열로, 경로(path), 요소(element), 로더(loader) 등을 포함할 수 있습니다.
+  2. routes: 라우트 구성에 대한 배열로, 어플리케이션의 라우트 구조를 정의합니다. 일반적으로 객체의 배열로, 경로(path), 요소(element), 로더(loader), 액션(action) 등을 포함할 수 있습니다.
   3. basename: 모든 라우트의 베이스 URL을 지정하는 문자열입니다.
+  4. loader : 특정 라우트에 대한 데이터 의존성을 해결하기 위해 사용됩니다. 라우팅을 처리할 때 해당 라우트에 대한 데이터를 미리 로드할 수 있는 기능을 제공합니다.
+  5. action : action 속성은 사용자가 폼을 제출(submit)할 때 호출되는 함수를 정의하는 데 사용됩니다. 이를 통해 폼 데이터를 처리하고 관련 동작을 실행할 수 있습니다.
 ```javascript
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -232,6 +234,52 @@ function App() {
   );
 }
 ```
+
+* **Loader 속성**
+* loader 속성은 React Router v6 이상에서 사용되며, 특정 라우트에 대한 데이터 의존성을 해결하기 위해 사용됩니다. 라우팅을 처리할 때 해당 라우트에 대한 데이터를 미리 로드할 수 있는 기능을 제공합니다.
+* **Loader 예시**
+~~~javascript
+import { createBrowserRouter } from "react-router-dom";
+
+// 데이터를 로드하는 함수입니다. 예를 들어 API 호출 등이 있을 수 있습니다.
+const rootLoader = async () => {
+  // 데이터 로딩 로직
+};
+
+// 라우터를 생성하고 경로 및 라우트 컴포넌트를 정의할 수 있습니다.
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    loader: rootLoader, // 라우트가 활성화될 때 실행될 로더 함수
+  },
+]);
+// =============
+// loader 기능이 필요한 컴포넌트에서 동기적인 값이 필요한 함수를 export하여 loader 속성해서 import 하여 주로 사용된다. 
+~~~
+
+* **Action과 Form 설명**
+* 사용 예시
+~~~javascript
+// createBrowserRouter내에 속성에 action을 정의해며 해당 컴포넌트에서 함수를 import 받아 사용 가능하다
+{ path: "/create-post", element: <NewPost /> , action: newPostAction},
+
+// NewPost 컴포넌트에 있는 newPostAction 함수
+export async function action({request}) {
+    console.log(request)
+    const formData = await request.formData();
+    const postData = Object.fromEntries(formData);
+    await fetch('http://localhost:8080/posts', {
+        method: 'POST',
+        body: JSON.stringify(postData),
+        headers: {
+            'Content-Type' : 'application/json',
+        },
+    });
+
+    return redirect('/');
+}
+~~~
 
 * **LayoutRouter 설명**
 1. 구현방법
