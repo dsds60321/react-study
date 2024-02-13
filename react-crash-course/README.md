@@ -355,7 +355,7 @@ function App() {
 ```javascript
 import { Link } from 'react-router-dom';
 
-function Navigation() {
+function Tab() {
   return (
     <nav>
       <Link to="/">홈</Link>
