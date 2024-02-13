@@ -72,3 +72,70 @@ export default function CartContextProvider({children}) {
 ~~~
 
 # useReducer
+* useReducer 훅은 상태 업데이트 로직을 컴포넌트 바깥으로 분리할 수 있게 해주며,
+<br>복잡한 상태 로직을 관리할 때 useState보다 더 나은 방법을 제공합니다. useState는 단순한 상태 업데이트에 사용하기 적합하지만, 여러 값이 엮인 복잡한 상태를 다루거나, 다음 상태가 이전 상태에 의존하는 경우 useReducer를 고려할 수 있습니다.
+
+### 사용법
+
+* useReducer는 reducer 함수와 초기 상태값을 파라미터로 받습니다.
+reducer 함수는 현재 상태와 액션을 인자로 받아 새로운 상태를 반환합니다.
+반환 받은 값은 상태(state)와 상태 업데이트 함수(dispatch)입니다.<br>
+
+### 기본 형태
+```javascript
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+### reducer 함수의 정의
+```javascript
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + 1 };
+    case 'DECREMENT':
+      return { count: state.count - 1 };
+    default:
+      throw new Error('Unhandled action');
+  }
+};
+```
+
+### 예제
+~~~javascript
+import React, { useReducer } from 'react';
+
+// 카운터 Reducer 정의
+function counterReducer(state, action) {
+  switch (action.type) {
+    case 'INCREASE':
+      return { count: state.count + 1 };
+    case 'DECREASE':
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+}
+
+// 컴포넌트
+function Counter() {
+  const [state, dispatch] = useReducer(counterReducer, { count: 0 });
+
+  const handleIncrease = () => {
+    dispatch({ type: 'INCREASE' });
+  };
+
+  const handleDecrease = () => {
+    dispatch({ type: 'DECREASE' });
+  };
+
+  return (
+    <>
+      <h1>{state.count}</h1>
+      <button onClick={handleIncrease}>증가</button>
+      <button onClick={handleDecrease}>감소</button>
+    </>
+  );
+}
+
+export default Counter;
+~~~
