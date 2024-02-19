@@ -7,7 +7,7 @@ import CartContextProvider from "../store/shopping-cart-context.jsx";
 function App() {
 
   return (
-    <CartContextProvider>
+    <CartContextProvider >
       <Header />
       <Shop>
         {DUMMY_PRODUCTS.map((product) => (
